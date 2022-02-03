@@ -8,8 +8,18 @@ SOURCES=""
 POD_NAME="local"
 WEIGHT=1
 
-
 function get_sources() {
+    CLUSTER_SIZE=$(peer-list -on-start=/usr/bin/get-pxc-state -service=$PXC_SERVICE 2>&1 \
+            | grep wsrep_clusterr_size \
+            | sort \
+            | tail -1 \
+            | cut -d : -f 12)
+
+     if [[ ${CLUSTER_SIZE:-0} == 0 ]]; then
+        echo '[ERROR] Cannot connect to cluster, size is empty or zero'
+        exit 1
+     fi
+
     SOURCES=$(peer-list -on-start=/usr/bin/get-pxc-state -service=$PXC_SERVICE 2>&1 \
         | grep wsrep_ready:ON:wsrep_connected:ON:wsrep_local_state_comment:Synced:wsrep_cluster_status:Primary \
         | sort \
