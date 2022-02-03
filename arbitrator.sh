@@ -10,7 +10,7 @@ WEIGHT=1
 
 function get_sources() {
     CLUSTER_SIZE=$(peer-list -on-start=/usr/bin/get-pxc-state -service=$PXC_SERVICE 2>&1 \
-            | grep wsrep_clusterr_size \
+            | grep wsrep_cluster_size \
             | sort \
             | tail -1 \
             | cut -d : -f 12)
